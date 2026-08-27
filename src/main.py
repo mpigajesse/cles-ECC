@@ -9,8 +9,15 @@ Shows the step-by-step calculation of Q = dG on elliptic curves.
 import sys
 from pathlib import Path
 
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent))
+# Add src directory to path for imports
+src_path = Path(__file__).parent
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
+
+# Also add parent directory for package imports
+parent_path = src_path.parent
+if str(parent_path) not in sys.path:
+    sys.path.insert(0, str(parent_path))
 
 from colorama import Fore, Style, init
 
@@ -44,10 +51,16 @@ def mode_pedagogical():
     print(f"{Fore.BLUE}Using small curve: y² = x³ + 2x + 2 (mod 17)\n")
 
     try:
-        from .curve import CURVE_P17_A2_B2
-        from .point import Point
-        from .key_generation import generate_keypair
-        from .operations import scalar_mult_with_steps
+        try:
+            from .curve import CURVE_P17_A2_B2
+            from .point import Point
+            from .key_generation import generate_keypair
+            from .operations import scalar_mult_with_steps
+        except ImportError:
+            from curve import CURVE_P17_A2_B2
+            from point import Point
+            from key_generation import generate_keypair
+            from operations import scalar_mult_with_steps
 
         curve = CURVE_P17_A2_B2
         G = Point(curve, 13, 7)  # Generator point for pedagogical curve
@@ -96,7 +109,10 @@ def mode_realistic():
     print(f"{Fore.BLUE}Bitcoin/Ethereum Curve\n")
 
     try:
-        from .key_generation import generate_secp256k1_keypair
+        try:
+            from .key_generation import generate_secp256k1_keypair
+        except ImportError:
+            from key_generation import generate_secp256k1_keypair
 
         print(f"{Fore.GREEN}Curve: secp256k1")
         print(f"  E: y² = x³ + 7 (mod p)")
@@ -133,7 +149,10 @@ def mode_nist():
     print(f"{Fore.BLUE}FIPS 186-4 Standard Curve\n")
 
     try:
-        from .key_generation import generate_nist_p256_keypair
+        try:
+            from .key_generation import generate_nist_p256_keypair
+        except ImportError:
+            from key_generation import generate_nist_p256_keypair
 
         print(f"{Fore.GREEN}Curve: NIST P-256 (prime256v1, secp256r1)")
         print(f"  E: y² = x³ - 3x + b (mod p)")
@@ -169,8 +188,11 @@ def run_tests():
     print(f"\n{Fore.BLUE}[RUNNING TESTS]")
     print(f"Executing pytest...\n")
     import subprocess
+
+    # Use the venv python if available, otherwise use sys.executable
+    python_exe = sys.executable
     result = subprocess.run(
-        ["python", "-m", "pytest", "tests/", "-v", "--tb=short"],
+        [python_exe, "-m", "pytest", "tests/", "-v", "--tb=short"],
         cwd=Path(__file__).parent.parent
     )
     return result.returncode == 0
