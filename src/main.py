@@ -40,27 +40,128 @@ def print_menu():
 
 def mode_pedagogical():
     """Run pedagogical mode with small curve."""
-    print(f"\n{Fore.BLUE}[PEDAGOGICAL MODE]")
-    print(f"{Fore.BLUE}Using small curve for educational purposes\n")
-    print(f"This mode will show all intermediate calculations.")
-    print(f"\n[PHASE 2-7 in development...]")
-    print(f"Currently not implemented - Phase 1 infrastructure only\n")
+    print(f"\n{Fore.BLUE}[PEDAGOGICAL MODE - Educational Demonstration]")
+    print(f"{Fore.BLUE}Using small curve: y² = x³ + 2x + 2 (mod 17)\n")
+
+    try:
+        from .curve import CURVE_P17_A2_B2
+        from .point import Point
+        from .key_generation import generate_keypair
+        from .operations import scalar_mult_with_steps
+
+        curve = CURVE_P17_A2_B2
+        G = Point(curve, 13, 7)  # Generator point for pedagogical curve
+        n = 18  # Order
+
+        print(f"{Fore.GREEN}Curve Parameters:")
+        print(f"  E: y² = x³ + 2x + 2 (mod 17)")
+        print(f"  Generator G = (13, 7)")
+        print(f"  Order n = 18")
+
+        # Generate keypair
+        print(f"\n{Fore.YELLOW}[1] Generating random private key d...")
+        keypair = generate_keypair(G, n)
+        print(f"{Fore.GREEN}  d = {keypair.private_key}")
+
+        # Show scalar multiplication steps
+        print(f"\n{Fore.YELLOW}[2] Computing Q = d × G (Scalar Multiplication)...")
+        print(f"{Fore.CYAN}Binary representation of {keypair.private_key}:")
+        print(f"  {bin(keypair.private_key)} = {keypair.private_key}")
+
+        # Calculate Q = d × G with steps
+        Q, steps = scalar_mult_with_steps(G, keypair.private_key, verbose=False)
+
+        print(f"\n{Fore.YELLOW}[3] Result:")
+        print(f"{Fore.GREEN}  Public Key Q = ({Q.x}, {Q.y})")
+        print(f"  Q is on curve: {Q.is_on_curve()}")
+
+        print(f"\n{Fore.YELLOW}[4] Verification:")
+        print(f"{Fore.GREEN}  Private key d: {keypair.private_key}")
+        print(f"  Public key Q:  ({Q.x}, {Q.y})")
+        print(f"  Relationship:  Q = d × G ✓")
+
+        print(f"\n{Fore.CYAN}This demonstrates the core ECC principle:")
+        print(f"  Easy: d + G → Q")
+        print(f"  Hard: Q + G → d (discrete log problem)")
+
+    except Exception as e:
+        print(f"{Fore.RED}Error: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 def mode_realistic():
     """Run realistic mode with secp256k1."""
     print(f"\n{Fore.BLUE}[REALISTIC MODE - secp256k1]")
-    print(f"{Fore.BLUE}Using Bitcoin/Ethereum curve\n")
-    print(f"\n[PHASE 8+ in development...]")
-    print(f"Currently not implemented - Phase 1 infrastructure only\n")
+    print(f"{Fore.BLUE}Bitcoin/Ethereum Curve\n")
+
+    try:
+        from .key_generation import generate_secp256k1_keypair
+
+        print(f"{Fore.GREEN}Curve: secp256k1")
+        print(f"  E: y² = x³ + 7 (mod p)")
+        print(f"  Field: p = 2²⁵⁶ - 2³² - 977")
+        print(f"  Order: n ≈ 2²⁵⁶")
+
+        print(f"\n{Fore.YELLOW}Generating secp256k1 keypair...")
+        keypair = generate_secp256k1_keypair()
+
+        print(f"\n{Fore.GREEN}Generated Successfully!")
+        print(f"\n{Fore.YELLOW}Private Key (d):")
+        print(f"  Hex: {hex(keypair.private_key)[:50]}...")
+        print(f"  Bits: {keypair.private_key.bit_length()}")
+
+        print(f"\n{Fore.YELLOW}Public Key (Q = d·G):")
+        print(f"  x: {hex(keypair.public_key.x)[:50]}...")
+        print(f"  y: {hex(keypair.public_key.y)[:50]}...")
+
+        print(f"\n{Fore.CYAN}secp256k1 is used in:")
+        print(f"  • Bitcoin transactions")
+        print(f"  • Ethereum smart contracts")
+        print(f"  • Lightning Network")
+        print(f"  • Many other cryptocurrencies")
+
+    except Exception as e:
+        print(f"{Fore.RED}Error: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 def mode_nist():
     """Run NIST P-256 mode."""
     print(f"\n{Fore.BLUE}[NIST MODE - P-256]")
-    print(f"{Fore.BLUE}Using NIST P-256 standard curve\n")
-    print(f"\n[PHASE 8+ in development...]")
-    print(f"Currently not implemented - Phase 1 infrastructure only\n")
+    print(f"{Fore.BLUE}FIPS 186-4 Standard Curve\n")
+
+    try:
+        from .key_generation import generate_nist_p256_keypair
+
+        print(f"{Fore.GREEN}Curve: NIST P-256 (prime256v1, secp256r1)")
+        print(f"  E: y² = x³ - 3x + b (mod p)")
+        print(f"  Field: p = 2²⁵⁶ - 2²²⁴ + 2¹⁹² + 2¹²⁸ - 1")
+        print(f"  Order: n ≈ 2²⁵⁶")
+
+        print(f"\n{Fore.YELLOW}Generating NIST P-256 keypair...")
+        keypair = generate_nist_p256_keypair()
+
+        print(f"\n{Fore.GREEN}Generated Successfully!")
+        print(f"\n{Fore.YELLOW}Private Key (d):")
+        print(f"  Hex: {hex(keypair.private_key)[:50]}...")
+        print(f"  Bits: {keypair.private_key.bit_length()}")
+
+        print(f"\n{Fore.YELLOW}Public Key (Q = d·G):")
+        print(f"  x: {hex(keypair.public_key.x)[:50]}...")
+        print(f"  y: {hex(keypair.public_key.y)[:50]}...")
+
+        print(f"\n{Fore.CYAN}NIST P-256 is standardized for:")
+        print(f"  • FIPS 186-4 Digital Signatures")
+        print(f"  • TLS/SSL Certificate Authentication")
+        print(f"  • Government and Financial Applications")
+        print(f"  • Secure Communications")
+
+    except Exception as e:
+        print(f"{Fore.RED}Error: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 def run_tests():
