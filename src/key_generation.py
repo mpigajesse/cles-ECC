@@ -69,7 +69,7 @@ def generate_private_key(n: int) -> int:
     return secrets.randbelow(n - 1) + 1
 
 
-def compute_public_key(private_key: int, generator: "Point") -> "Point | Point_At_Infinity":
+def compute_public_key(private_key: int, generator: "Point", use_binary: bool = True) -> "Point | Point_At_Infinity":
     """
     Compute public key from private key.
 
@@ -87,6 +87,7 @@ def compute_public_key(private_key: int, generator: "Point") -> "Point | Point_A
     Args:
         private_key: Private key d
         generator: Generator point G
+        use_binary: If True, use binary (fast) method; if False, use naive (slow) method
 
     Returns:
         Public key Q = d × G (Point or Point_At_Infinity if d=0)
@@ -96,7 +97,7 @@ def compute_public_key(private_key: int, generator: "Point") -> "Point | Point_A
         >>> d = 12345
         >>> Q = compute_public_key(d, G)  # Q = 12345·G
     """
-    return scalar_mult(generator, private_key, use_binary=True)
+    return scalar_mult(generator, private_key, use_binary=use_binary)
 
 
 def generate_keypair(

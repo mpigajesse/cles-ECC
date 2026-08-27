@@ -73,9 +73,17 @@ def mode_pedagogique():
         print(f"  Générateur G = (13, 7)")
         print(f"  Ordre n = 18")
 
-        # Générer une paire de clés
+        # Générer une paire de clés (utiliser la méthode naïve pour le mode pédagogique)
         print(f"\n{Fore.YELLOW}[1] Génération d'une clé privée aléatoire d...")
-        paire_cles = generate_keypair(G, n)
+        # Pour le mode pédagogique, utiliser la multiplication scalaire naïve (plus lente mais plus claire)
+        try:
+            from .key_generation import KeyPair, generate_private_key, compute_public_key
+        except ImportError:
+            from key_generation import KeyPair, generate_private_key, compute_public_key
+
+        private_key = generate_private_key(n)
+        public_key = compute_public_key(private_key, G, use_binary=False)  # Utiliser la méthode naïve
+        paire_cles = KeyPair(curve=G.curve, private_key=private_key, public_key=public_key, generator=G)
         print(f"{Fore.GREEN}  d = {paire_cles.private_key}")
 
         # Montrer les étapes de la multiplication scalaire

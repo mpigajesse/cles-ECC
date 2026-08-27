@@ -107,7 +107,9 @@ def double_point(P) -> "Point | Point_At_Infinity":
     if isinstance(P, Point_At_Infinity):
         return P
 
-    assert isinstance(P, Point)
+    # Ensure P is a Point (not Point_At_Infinity)
+    if not isinstance(P, Point):
+        return P  # Return as-is if it's something unexpected
 
     curve = P.curve
     p = curve.p
@@ -224,17 +226,24 @@ def scalar_mult_binary(P, d: int) -> "Point | Point_At_Infinity":
     # Convert d to binary
     binary = bin(d)[2:]  # Remove '0b' prefix
 
-    # Start with identity
+    # Start with first bit
     result = Point_At_Infinity(P.curve)
 
     # Process each bit
-    for bit in binary:
-        # Always double
-        result = double_point(result) if not isinstance(result, Point_At_Infinity) else result
+    for i, bit in enumerate(binary):
+        # For the first bit (i=0)
+        if i == 0:
+            # If first bit is 1, result = P
+            if bit == "1":
+                result = P
+            # If first bit is 0, result stays as Point_At_Infinity
+        else:
+            # For subsequent bits: always double first
+            result = double_point(result)
 
-        # If bit is 1, add P
-        if bit == "1":
-            result = add_points(result, P)
+            # If bit is 1, add P
+            if bit == "1":
+                result = add_points(result, P)
 
     return result
 
