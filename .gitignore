@@ -1,0 +1,40 @@
+# Clés privées
+*.key
+*.pem
+*.ppk
+private_key*
+
+# Secrets et variables d'environnement
+.env
+.env.local
+.env.*.local
+secrets/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Node modules (si applicable)
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# OS spécifique Windows
+**/Thumbs.db
