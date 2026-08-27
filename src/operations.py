@@ -46,16 +46,17 @@ def add_points(P, Q) -> "Point | Point_At_Infinity":
     Raises:
         ValueError: If points are on different curves
     """
-    # Handle point at infinity cases using is_at_infinity() method
-    # This is more robust than isinstance checks
-    if hasattr(P, 'is_at_infinity') and P.is_at_infinity():
+    # Handle point at infinity cases
+    # Check if P is a Point first (most common case)
+    # If not, treat it as Point_At_Infinity (identity element)
+    if not isinstance(P, Point):
+        # P is Point_At_Infinity or similar identity element
         return Q
-    if hasattr(Q, 'is_at_infinity') and Q.is_at_infinity():
+    if not isinstance(Q, Point):
+        # Q is Point_At_Infinity or similar identity element
         return P
 
-    # Both are regular points - verify they're Point instances
-    if not isinstance(P, Point) or not isinstance(Q, Point):
-        raise TypeError(f"Expected Point objects, got {type(P).__name__} and {type(Q).__name__}")
+    # Both are regular points
 
     # Verify same curve
     if P.curve != Q.curve:
@@ -105,13 +106,9 @@ def double_point(P) -> "Point | Point_At_Infinity":
     Raises:
         ValueError: If point is at infinity or has y-coordinate 0
     """
-    # Point at infinity case
-    if hasattr(P, 'is_at_infinity') and P.is_at_infinity():
-        return P
-
-    # Ensure P is a Point
+    # Point at infinity case - if not a Point, return as identity
     if not isinstance(P, Point):
-        raise TypeError(f"Expected Point, got {type(P).__name__}")
+        return P
 
     curve = P.curve
     p = curve.p
