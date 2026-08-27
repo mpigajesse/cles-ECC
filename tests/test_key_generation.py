@@ -204,7 +204,14 @@ class TestKeyPairValidation:
 
         d = 5
         Q_correct = compute_public_key(d, G)
-        Q_wrong = Point(curve, 2, 11)  # Some other point
+
+        # Find a different point on the curve
+        d_wrong = 6
+        Q_wrong = compute_public_key(d_wrong, G)
+
+        if Q_wrong == Q_correct:
+            # If they happen to be same, use d_wrong = 1 instead
+            Q_wrong = G
 
         keypair = KeyPair(curve, d, Q_wrong, G)
         assert not validate_keypair(keypair)

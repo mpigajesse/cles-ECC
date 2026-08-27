@@ -242,8 +242,11 @@ class TestSpecialCases:
             P, Q = points[0], points[1]
             result = add_points(P, Q)
             # Result should have valid coordinates
-            assert 0 <= result.x < curve.p or isinstance(result, Point_At_Infinity)
-            assert 0 <= result.y < curve.p or isinstance(result, Point_At_Infinity)
+            if isinstance(result, Point_At_Infinity):
+                pass  # Identity is valid
+            else:
+                assert 0 <= result.x < curve.p
+                assert 0 <= result.y < curve.p
 
 
 class TestPointAdditionFormulas:

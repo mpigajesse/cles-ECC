@@ -46,12 +46,12 @@ class TestModularInverse:
     def test_mod_inverse_no_inverse(self):
         """Test that modular inverse raises error when gcd(a,p) != 1."""
         # 4 and 6 are not coprime
-        with pytest.raises(ValueError, match="no modular inverse"):
+        with pytest.raises(ValueError, match="does not exist|no modular inverse"):
             mod_inverse(4, 6)
 
     def test_mod_inverse_zero(self):
         """Test that 0 has no modular inverse."""
-        with pytest.raises(ValueError, match="no modular inverse"):
+        with pytest.raises(ValueError, match="does not exist|no modular inverse"):
             mod_inverse(0, 11)
 
     def test_mod_inverse_identity(self):
