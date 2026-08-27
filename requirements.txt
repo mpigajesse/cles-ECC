@@ -1,0 +1,16 @@
+# Dépendances principales
+pytest>=7.4.0          # Framework de test
+pytest-cov>=4.1.0      # Couverture de test
+
+# Arithmétique et mathématiques
+sympy>=1.12            # Algèbre symbolique
+
+# SageMath (optionnel mais fortement recommandé)
+# Installez SageMath via: https://www.sagemath.org/
+# sage --pip install sympy
+
+# Vérification optionnelle (pour comparer)
+ecdsa>=0.18.0          # Implémentation ECDSA de référence
+
+# Utilitaires
+colorama>=0.4.6        # Affichage coloré en terminal
